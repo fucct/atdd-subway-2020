@@ -238,11 +238,25 @@
           return
         }
         try {
-          await this.searchPath({
-            source: this.path.source,
-            target: this.path.target,
-            type: this.path.type
-          });
+          if (this.path.type === PATH_TYPE.ARRIVAL_TIME) {
+            const today = new Date();
+            const dayTime = this.departureTimeView.dayTime;
+            const hour = this.departureTimeView.hour;
+            const minute = this.departureTimeView.minute;
+            const time = `${today.getFullYear()}${this.getTimeSelectView(today.getMonth() + 1).text}${this.getTimeSelectView(
+              today.getDay() + 1).text}${this.getTimeSelectView(hour).text}${this.getTimeSelectView(
+              minute).text}`
+
+            await this.searchPath({
+              ...this.path,
+              time
+            })
+
+          } else {
+            await this.searchPath({
+              ...this.path
+            });
+          }
         }
         catch (e) {
           this.showSnackbar(SNACKBAR_MESSAGES.COMMON.FAIL)
