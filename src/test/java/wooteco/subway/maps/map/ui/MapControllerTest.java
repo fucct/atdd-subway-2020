@@ -17,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import wooteco.security.core.TokenResponse;
 import wooteco.subway.common.documentation.Documentation;
-import wooteco.subway.common.documentation.MapDocumentation;
+import wooteco.subway.common.documentation.PathDocumentation;
 import wooteco.subway.maps.map.application.MapService;
 import wooteco.subway.maps.map.dto.PathResponse;
 import wooteco.subway.maps.station.dto.StationResponse;
@@ -76,7 +75,7 @@ public class MapControllerTest extends Documentation {
             .queryParam("target", "2")
             .queryParam("type", "DISTANCE"))
             .andExpect(status().isOk())
-            .andDo(MapDocumentation.findPath());
+            .andDo(PathDocumentation.findPath());
     }
 
     @DisplayName("로그인 한 사용자가 Path를 조회한다.")
@@ -90,7 +89,7 @@ public class MapControllerTest extends Documentation {
             .queryParam("target", "1")
             .queryParam("type", "DISTANCE"))
             .andExpect(status().isOk())
-            .andDo(MapDocumentation.findPathWithLogin());
+            .andDo(PathDocumentation.findPathWithLogin());
     }
 
     @Test

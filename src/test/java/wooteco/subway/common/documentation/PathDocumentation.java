@@ -8,10 +8,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static wooteco.subway.common.documentation.Documentation.*;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.ResultHandler;
 
-public class MapDocumentation {
+public class PathDocumentation {
     public static RestDocumentationResultHandler findPath() {
         return document("paths/find",
             getDocumentRequest(),
