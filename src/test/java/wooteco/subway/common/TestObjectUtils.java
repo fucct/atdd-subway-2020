@@ -1,6 +1,7 @@
 package wooteco.subway.common;
 
 import wooteco.subway.maps.line.domain.Line;
+import wooteco.subway.maps.line.domain.LineStation;
 import wooteco.subway.maps.station.domain.Station;
 import org.springframework.test.util.ReflectionTestUtils;
 

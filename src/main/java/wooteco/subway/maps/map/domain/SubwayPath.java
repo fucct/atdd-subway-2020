@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubwayPath {
+    private static final int DEFAULT_FARE = 1250;
     private List<LineStationEdge> lineStationEdges;
 
     public SubwayPath(List<LineStationEdge> lineStationEdges) {
@@ -43,25 +44,13 @@ public class SubwayPath {
 
     public int calculateFare(final int extraFare) {
         final int distance = this.calculateDistance();
-        if (distance == 0) {
-            return 0;
-        }
-        if (distance <= 10) {
-            return 1250 + extraFare;
-        }
-        if (distance <= 50) {
-            return (int)((Math.ceil((distance - 1) / 5) + 1) * 100) + extraFare;
-        }
-        return (int)((Math.ceil((distance - 1) / 8) + 1) * 100) + extraFare;
+        final DistanceType distanceType = DistanceType.of(distance);
+        return distanceType.calculate(distance, extraFare);
     }
 
     public int discountFare(final int fare, final int memberAge) {
-        if (memberAge >= 13 && memberAge < 19) {
-            return (int)((fare - 350) * 0.8);
-        }
-        if (memberAge >= 6 && memberAge < 13) {
-            return (int)((fare - 350) * 0.5);
-        }
-        return fare;
+        final AgeType ageType = AgeType.of(memberAge);
+
+        return ageType.calculate(fare);
     }
 }
