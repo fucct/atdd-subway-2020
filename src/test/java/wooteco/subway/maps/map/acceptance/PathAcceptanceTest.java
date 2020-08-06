@@ -2,6 +2,7 @@ package wooteco.subway.maps.map.acceptance;
 
 import static wooteco.subway.maps.line.acceptance.step.LineStationAcceptanceStep.*;
 import static wooteco.subway.maps.map.acceptance.step.PathAcceptanceStep.*;
+import static wooteco.subway.members.member.acceptance.step.MemberAcceptanceStep.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import wooteco.subway.maps.line.acceptance.step.LineAcceptanceStep;
 import wooteco.subway.maps.line.dto.LineResponse;
 import wooteco.subway.maps.station.acceptance.step.StationAcceptanceStep;
 import wooteco.subway.maps.station.dto.StationResponse;
+import wooteco.subway.members.member.dto.MemberResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -25,6 +27,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 이호선;
     private Long 신분당선;
     private Long 삼호선;
+    private String email;
+    private String password;
+    private int age;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -38,6 +43,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
+        email = "dd@email.com";
+        password = "123";
+        age = 12;
         교대역 = 지하철역_등록되어_있음("교대역");
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
@@ -58,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 2, 2);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("로그인하지 않은 사용자의 두 역의 최단 거리 경로와 금액을 조회한다.")
     @Test
     void findPathByDistance() {
         //when
@@ -69,6 +77,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총_거리와_소요_시간을_함께_응답함(response, 3, 4, 1850);
     }
 
+    @DisplayName("로그인된 사용자의 두 역의 최단 거리 경로와 금액을 조회한다.")
+    @Test
+    void findPathByDistance2() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청2("DISTANCE", 1L, 3L, email, password, age);
+
+        //then
+        적절한_경로를_응답(response, Lists.newArrayList(교대역, 남부터미널역, 양재역));
+        총_거리와_소요_시간을_함께_응답함(response, 3, 4, 750);
+    }
+
     @DisplayName("두 역의 최소 시간 경로를 조회한다.")
     @Test
     void findPathByDuration() {
@@ -77,6 +96,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         적절한_경로를_응답(response, Lists.newArrayList(교대역, 강남역, 양재역));
         총_거리와_소요_시간을_함께_응답함(response, 4, 3, 2150);
+    }
+
+    @DisplayName("로그인된 사용자의 두 역의 최소 시간 경로를 조회한다.")
+    @Test
+    void findPathByDuration2() {
+        //when
+        ExtractableResponse<Response> response = 거리_경로_조회_요청2("DURATION", 1L, 3L, email, password, age);
+        //then
+        적절한_경로를_응답(response, Lists.newArrayList(교대역, 강남역, 양재역));
+        총_거리와_소요_시간을_함께_응답함(response, 4, 3, 900);
     }
 
     private Long 지하철_노선_등록되어_있음(String name, String color, int extraFare) {
