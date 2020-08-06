@@ -2,6 +2,7 @@ package wooteco.subway.maps.map.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -54,25 +55,26 @@ public class MapService {
         final List<Line> lines = lineService.findLines();
         final SubwayPath subwayPath = pathService.findPath(lines, source, target, type);
         final Map<Long, Station> stations = stationService.findStationsByIds(subwayPath.extractStationId());
-        try {
-            final MemberResponse member = memberService.findMember(loginMember.getId());
-            int totalFare = calculateTotalFare(subwayPath, member);
-
-            return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
-        } catch (RuntimeException e) {
+        if (Objects.isNull(loginMember)) {
             int totalFare = calculateTotalFare(subwayPath);
 
             return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
         }
+        final MemberResponse member = memberService.findMember(loginMember.getId());
+        int totalFare = calculateTotalFare(subwayPath, member);
+
+        return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
     }
 
     private int calculateTotalFare(final SubwayPath subwayPath) {
         final int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
         return subwayPath.calculateFare(extraFare);
     }
+
     private int calculateTotalFare(final SubwayPath subwayPath, final MemberResponse member) {
         final int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
         final int totalFare = subwayPath.calculateFare(extraFare);
+
         return subwayPath.discountFare(totalFare, member.getAge());
     }
 
