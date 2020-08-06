@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PathResponseAssembler {
-    public static CalculatedPathResponse assemble(SubwayPath subwayPath, Map<Long, Station> stations, final int extraFare) {
+    public static PathResponse assemble(SubwayPath subwayPath, Map<Long, Station> stations, final int extraFare) {
         List<StationResponse> stationResponses = subwayPath.extractStationId().stream()
                 .map(it -> StationResponse.of(stations.get(it)))
                 .collect(Collectors.toList());
 
         int distance = subwayPath.calculateDistance();
 
-        return new CalculatedPathResponse(stationResponses, subwayPath.calculateDuration(), distance, extraFare);
+        return new PathResponse(stationResponses, subwayPath.calculateDuration(), distance, extraFare);
     }
 }

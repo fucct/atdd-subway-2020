@@ -13,7 +13,7 @@ import wooteco.subway.maps.line.dto.LineResponse;
 import wooteco.subway.maps.line.dto.LineStationResponse;
 import wooteco.subway.maps.map.domain.PathType;
 import wooteco.subway.maps.map.domain.SubwayPath;
-import wooteco.subway.maps.map.dto.CalculatedPathResponse;
+import wooteco.subway.maps.map.dto.PathResponse;
 import wooteco.subway.maps.map.dto.MapResponse;
 import wooteco.subway.maps.map.dto.PathResponseAssembler;
 import wooteco.subway.maps.station.application.StationService;
@@ -44,7 +44,7 @@ public class MapService {
         return new MapResponse(lineResponses);
     }
 
-    public CalculatedPathResponse findPath(Long source, Long target, PathType type) {
+    public PathResponse findPath(Long source, Long target, PathType type) {
         List<Line> lines = lineService.findLines();
         SubwayPath subwayPath = pathService.findPath(lines, source, target, type);
         Map<Long, Station> stations = stationService.findStationsByIds(subwayPath.extractStationId());
