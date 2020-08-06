@@ -26,6 +26,7 @@ import wooteco.subway.maps.map.dto.PathResponse;
 import wooteco.subway.maps.map.dto.MapResponse;
 import wooteco.subway.maps.station.application.StationService;
 import wooteco.subway.maps.station.domain.Station;
+import wooteco.subway.members.member.application.MemberService;
 
 @ExtendWith(MockitoExtension.class)
 public class MapServiceTest {
@@ -36,6 +37,8 @@ public class MapServiceTest {
     private StationService stationService;
     @Mock
     private PathService pathService;
+    @Mock
+    private MemberService memberService;
 
     private Map<Long, Station> stations;
     private List<Line> lines;
@@ -74,7 +77,7 @@ public class MapServiceTest {
         );
         subwayPath = new SubwayPath(lineStations);
 
-        mapService = new MapService(lineService, stationService, pathService);
+        mapService = new MapService(lineService, stationService, pathService, memberService);
     }
 
     @Test
@@ -83,7 +86,7 @@ public class MapServiceTest {
         when(pathService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(subwayPath);
         when(stationService.findStationsByIds(anyList())).thenReturn(stations);
 
-        PathResponse pathResponse = mapService.findPath(1L, 3L, PathType.DISTANCE);
+        PathResponse pathResponse = mapService.findPath(1L, 3L, PathType.DISTANCE, null);
 
         assertThat(pathResponse.getStations()).isNotEmpty();
         assertThat(pathResponse.getDuration()).isNotZero();

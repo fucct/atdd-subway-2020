@@ -19,18 +19,24 @@ import wooteco.subway.maps.map.dto.PathResponseAssembler;
 import wooteco.subway.maps.station.application.StationService;
 import wooteco.subway.maps.station.domain.Station;
 import wooteco.subway.maps.station.dto.StationResponse;
+import wooteco.subway.members.member.application.MemberService;
+import wooteco.subway.members.member.domain.LoginMember;
+import wooteco.subway.members.member.domain.Member;
+import wooteco.subway.members.member.dto.MemberResponse;
 
 @Service
 @Transactional
 public class MapService {
-    private LineService lineService;
-    private StationService stationService;
-    private PathService pathService;
+    private final LineService lineService;
+    private final StationService stationService;
+    private final PathService pathService;
+    private final MemberService memberService;
 
-    public MapService(LineService lineService, StationService stationService, PathService pathService) {
+    public MapService(LineService lineService, StationService stationService, PathService pathService, MemberService memberService) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathService = pathService;
+        this.memberService = memberService;
     }
 
     public MapResponse findMap() {
@@ -44,19 +50,30 @@ public class MapService {
         return new MapResponse(lineResponses);
     }
 
-    public PathResponse findPath(Long source, Long target, PathType type) {
-        List<Line> lines = lineService.findLines();
-        SubwayPath subwayPath = pathService.findPath(lines, source, target, type);
-        Map<Long, Station> stations = stationService.findStationsByIds(subwayPath.extractStationId());
+    public PathResponse findPath(Long source, Long target, PathType type, LoginMember loginMember) {
+        final List<Line> lines = lineService.findLines();
+        final SubwayPath subwayPath = pathService.findPath(lines, source, target, type);
+        final Map<Long, Station> stations = stationService.findStationsByIds(subwayPath.extractStationId());
+        try {
+            final MemberResponse member = memberService.findMember(loginMember.getId());
+            int totalFare = calculateTotalFare(subwayPath, member);
 
-        int totalFare = calculateTotalFare(subwayPath);
+            return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
+        } catch (RuntimeException e) {
+            int totalFare = calculateTotalFare(subwayPath);
 
-        return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
+            return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
+        }
     }
 
     private int calculateTotalFare(final SubwayPath subwayPath) {
-        int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
+        final int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
         return subwayPath.calculateFare(extraFare);
+    }
+    private int calculateTotalFare(final SubwayPath subwayPath, final MemberResponse member) {
+        final int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
+        final int totalFare = subwayPath.calculateFare(extraFare);
+        return subwayPath.discountFare(totalFare, member.getAge());
     }
 
     private Map<Long, Station> findStations(List<Line> lines) {

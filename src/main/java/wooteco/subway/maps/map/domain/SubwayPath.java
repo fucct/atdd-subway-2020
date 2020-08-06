@@ -54,4 +54,14 @@ public class SubwayPath {
         }
         return (int)((Math.ceil((distance - 1) / 8) + 1) * 100) + extraFare;
     }
+
+    public int discountFare(final int fare, final int memberAge) {
+        if (memberAge >= 13 && memberAge < 19) {
+            return (int)((fare - 350) * 0.2);
+        }
+        if (memberAge >= 6 && memberAge < 13) {
+            return (int)((fare - 350) * 0.5);
+        }
+        return fare;
+    }
 }
