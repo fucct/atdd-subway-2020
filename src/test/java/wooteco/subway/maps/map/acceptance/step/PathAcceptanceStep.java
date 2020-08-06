@@ -27,7 +27,7 @@ public class PathAcceptanceStep {
     }
 
     public static void 적절한_경로를_응답(ExtractableResponse<Response> response, ArrayList<Long> expectedPath) {
-        PathResponse pathResponse = response.as(PathResponse.class);
+        CalculatedPathResponse pathResponse = response.as(CalculatedPathResponse.class);
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());

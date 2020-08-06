@@ -2,6 +2,7 @@ package wooteco.subway.maps.map.ui;
 
 import wooteco.subway.maps.map.application.MapService;
 import wooteco.subway.maps.map.domain.PathType;
+import wooteco.subway.maps.map.dto.CalculatedPathResponse;
 import wooteco.subway.maps.map.dto.MapResponse;
 import wooteco.subway.maps.map.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class MapController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target,
+    public ResponseEntity<CalculatedPathResponse> findPath(@RequestParam Long source, @RequestParam Long target,
                                                  @RequestParam PathType type) {
         return ResponseEntity.ok(mapService.findPath(source, target, type));
     }

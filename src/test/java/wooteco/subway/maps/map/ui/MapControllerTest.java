@@ -2,6 +2,7 @@ package wooteco.subway.maps.map.ui;
 
 import wooteco.subway.maps.map.application.MapService;
 import wooteco.subway.maps.map.domain.PathType;
+import wooteco.subway.maps.map.dto.CalculatedPathResponse;
 import wooteco.subway.maps.map.dto.PathResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,9 @@ public class MapControllerTest {
     void findPath() {
         MapService mapService = mock(MapService.class);
         MapController controller = new MapController(mapService);
-        when(mapService.findPath(anyLong(), anyLong(), any())).thenReturn(new PathResponse());
+        when(mapService.findPath(anyLong(), anyLong(), any())).thenReturn(new CalculatedPathResponse());
 
-        ResponseEntity<PathResponse> entity = controller.findPath(1L, 2L, PathType.DISTANCE);
+        ResponseEntity<CalculatedPathResponse> entity = controller.findPath(1L, 2L, PathType.DISTANCE);
 
         assertThat(entity.getBody()).isNotNull();
     }

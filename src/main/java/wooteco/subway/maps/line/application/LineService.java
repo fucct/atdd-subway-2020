@@ -73,4 +73,10 @@ public class LineService {
                 .map(it -> LineStationResponse.of(line.getId(), it, StationResponse.of(stations.get(it.getStationId()))))
                 .collect(Collectors.toList());
     }
+
+    public int getMaxExtraFareInLines(final List<Long> extractLineId) {
+        final List<Line> lines = lineRepository.findAllById(extractLineId);
+
+        return lines.stream().mapToInt(Line::getExtraFare).reduce(Integer::max).getAsInt();
+    }
 }

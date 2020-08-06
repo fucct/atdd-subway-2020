@@ -7,4 +7,8 @@ import java.util.List;
 public interface LineRepository extends JpaRepository<Line, Long> {
     @Override
     List<Line> findAll();
+
+
+    @Override
+    List<Line> findAllById(Iterable ids);
 }

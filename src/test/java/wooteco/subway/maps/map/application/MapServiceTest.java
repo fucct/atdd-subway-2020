@@ -7,6 +7,7 @@ import wooteco.subway.maps.line.domain.LineStation;
 import wooteco.subway.maps.map.domain.LineStationEdge;
 import wooteco.subway.maps.map.domain.PathType;
 import wooteco.subway.maps.map.domain.SubwayPath;
+import wooteco.subway.maps.map.dto.CalculatedPathResponse;
 import wooteco.subway.maps.map.dto.MapResponse;
 import wooteco.subway.maps.map.dto.PathResponse;
 import wooteco.subway.maps.station.application.StationService;
@@ -82,7 +83,7 @@ public class MapServiceTest {
         when(pathService.findPath(anyList(), anyLong(), anyLong(), any())).thenReturn(subwayPath);
         when(stationService.findStationsByIds(anyList())).thenReturn(stations);
 
-        PathResponse pathResponse = mapService.findPath(1L, 3L, PathType.DISTANCE);
+        CalculatedPathResponse pathResponse = mapService.findPath(1L, 3L, PathType.DISTANCE);
 
         assertThat(pathResponse.getStations()).isNotEmpty();
         assertThat(pathResponse.getDuration()).isNotZero();
