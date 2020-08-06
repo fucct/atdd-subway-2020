@@ -92,4 +92,8 @@ public class MapService {
             .map(it -> LineStationResponse.of(line.getId(), it, StationResponse.of(stations.get(it.getStationId()))))
             .collect(Collectors.toList());
     }
+
+    public PathResponse findPathByTime(final Long source, final Long target, final PathType type, final LoginMember loginMember, final String time) {
+        return null;
+    }
 }

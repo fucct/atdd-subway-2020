@@ -1,5 +1,7 @@
 package wooteco.subway.maps.map.ui;
 
+import java.util.Objects;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +24,10 @@ public class MapController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target,
-        @RequestParam PathType type, @AuthenticationPrincipal(required = false) LoginMember loginMember) {
+        @RequestParam PathType type, @AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestParam(required = false)String time) {
+        if (Objects.nonNull(time)) {
+            return ResponseEntity.ok(mapService.findPathByTime(source, target, type, loginMember, time));
+        }
         return ResponseEntity.ok(mapService.findPath(source, target, type, loginMember));
     }
 

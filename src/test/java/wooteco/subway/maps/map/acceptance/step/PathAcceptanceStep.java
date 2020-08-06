@@ -41,7 +41,17 @@ public class PathAcceptanceStep {
             extract();
     }
 
-    public static void 적절한_경로를_응답(ExtractableResponse<Response> response, ArrayList<Long> expectedPath) {
+    public static ExtractableResponse<Response> 빠른_도착_경로_조회_요청(String type, long source, long target, String time) {
+        return RestAssured.given().log().all().
+            accept(MediaType.APPLICATION_JSON_VALUE).
+            when().
+            get("/paths?source={sourceId}&target={targetId}&type={type}&time={time}", source, target, type, time).
+            then().
+            log().all().
+            extract();
+    }
+
+   public static void 적절한_경로를_응답(ExtractableResponse<Response> response, ArrayList<Long> expectedPath) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<Long> stationIds = pathResponse.getStations().stream()
             .map(StationResponse::getId)
