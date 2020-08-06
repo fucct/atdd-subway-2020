@@ -40,4 +40,18 @@ public class SubwayPath {
     public int calculateDistance() {
         return lineStationEdges.stream().mapToInt(it -> it.getLineStation().getDistance()).sum();
     }
+
+    public int calculateFare(final int extraFare) {
+        final int distance = this.calculateDistance();
+        if (distance == 0) {
+            return 0;
+        }
+        if (distance <= 10) {
+            return 1250 + extraFare;
+        }
+        if (distance <= 50) {
+            return (int)((Math.ceil((distance - 1) / 5) + 1) * 100) + extraFare;
+        }
+        return (int)((Math.ceil((distance - 1) / 8) + 1) * 100) + extraFare;
+    }
 }

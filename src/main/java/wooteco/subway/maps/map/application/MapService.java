@@ -48,25 +48,15 @@ public class MapService {
         List<Line> lines = lineService.findLines();
         SubwayPath subwayPath = pathService.findPath(lines, source, target, type);
         Map<Long, Station> stations = stationService.findStationsByIds(subwayPath.extractStationId());
-        int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
 
-        int totalFare = calculateFare(subwayPath, extraFare);
+        int totalFare = calculateTotalFare(subwayPath);
 
         return PathResponseAssembler.assemble(subwayPath, stations, totalFare);
     }
 
-    private int calculateFare(final SubwayPath subwayPath, final int extraFare) {
-        final int distance = subwayPath.calculateDistance();
-        if (distance == 0) {
-            return 0;
-        }
-        if (distance <= 10) {
-            return 1250 + extraFare;
-        }
-        if (distance <= 50) {
-            return (int)((Math.ceil((distance - 1) / 5) + 1) * 100) + extraFare;
-        }
-        return (int)((Math.ceil((distance - 1) / 8) + 1) * 100) + extraFare;
+    private int calculateTotalFare(final SubwayPath subwayPath) {
+        int extraFare = lineService.getMaxExtraFareInLines(subwayPath.extractLineId());
+        return subwayPath.calculateFare(extraFare);
     }
 
     private Map<Long, Station> findStations(List<Line> lines) {
